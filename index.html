@@ -16,49 +16,49 @@
     <section class="panel controls">
       <h2>Inputs</h2>
       <label class="file">
-        Pattern image <span>bitmap or SVG/vector</span>
+        <span class="label-text">Pattern image <span class="hint">bitmap or SVG/vector</span><span class="tip" tabindex="0" aria-label="Upload the texture that will be repeated across the stereogram. Noisy/random patterns usually fuse more easily than large recognizable images.">?</span></span>
         <input id="patternInput" type="file" accept="image/*,.svg" />
       </label>
       <label class="file">
-        Hidden depth map <span>white = near by default</span>
+        <span class="label-text">Hidden depth map <span class="hint">white = near by default</span><span class="tip" tabindex="0" aria-label="Upload a grayscale depth map. Lighter pixels are treated as closer unless you reverse projection/depth in the controls.">?</span></span>
         <input id="depthInput" type="file" accept="image/*,.svg" />
       </label>
 
       <h2>Output</h2>
       <div class="grid">
-        <label>Width px<input id="outW" type="number" min="128" max="4096" value="1200"></label>
-        <label>Height px<input id="outH" type="number" min="128" max="4096" value="800"></label>
-        <label>Render scale<input id="renderScale" type="number" min="0.25" max="4" step="0.25" value="1"></label>
-        <label>Tile width px<input id="tileW" type="number" min="16" max="512" value="120"></label>
+        <label><span class="label-text">Width px<span class="tip" tabindex="0" aria-label="Final exported image width in pixels. Larger widths produce more detail but take longer to generate.">?</span></span><input id="outW" type="number" min="128" max="4096" value="1200"></label>
+        <label><span class="label-text">Height px<span class="tip" tabindex="0" aria-label="Final exported image height in pixels. Larger heights produce more detail but take longer to generate.">?</span></span><input id="outH" type="number" min="128" max="4096" value="800"></label>
+        <label><span class="label-text">Render scale<span class="tip" tabindex="0" aria-label="Multiplies the output resolution while keeping the same layout proportions. Use higher values for sharper exports; use lower values for faster tests.">?</span></span><input id="renderScale" type="number" min="0.25" max="4" step="0.25" value="1"></label>
+        <label><span class="label-text">Tile width px<span class="tip" tabindex="0" aria-label="Base horizontal repeat spacing. This mostly determines how far your eyes must overlap/diverge to see the hidden image. Smaller is easier; larger allows stronger depth.">?</span></span><input id="tileW" type="number" min="16" max="512" value="120"></label>
       </div>
 
       <h2>Hidden image placement</h2>
       <div class="grid">
-        <label>Encoded width %<input id="depthWPercent" type="number" min="5" max="100" value="70"></label>
-        <label>Encoded height %<input id="depthHPercent" type="number" min="5" max="100" value="70"></label>
-        <label>Offset X %<input id="depthXPercent" type="number" min="0" max="100" value="50"></label>
-        <label>Offset Y %<input id="depthYPercent" type="number" min="0" max="100" value="50"></label>
+        <label><span class="label-text">Encoded width %<span class="tip" tabindex="0" aria-label="Width of the hidden depth map as a percentage of the final image width.">?</span></span><input id="depthWPercent" type="number" min="5" max="100" value="70"></label>
+        <label><span class="label-text">Encoded height %<span class="tip" tabindex="0" aria-label="Height of the hidden depth map as a percentage of the final image height.">?</span></span><input id="depthHPercent" type="number" min="5" max="100" value="70"></label>
+        <label><span class="label-text">Offset X %<span class="tip" tabindex="0" aria-label="Horizontal center position of the hidden depth map. 50% centers it; lower moves it left; higher moves it right.">?</span></span><input id="depthXPercent" type="number" min="0" max="100" value="50"></label>
+        <label><span class="label-text">Offset Y %<span class="tip" tabindex="0" aria-label="Vertical center position of the hidden depth map. 50% centers it; lower moves it up; higher moves it down.">?</span></span><input id="depthYPercent" type="number" min="0" max="100" value="50"></label>
       </div>
 
       <h2>Depth</h2>
       <div class="grid">
-        <label>Projection
+        <label><span class="label-text">Projection<span class="tip" tabindex="0" aria-label="Choose whether lighter depth areas appear behind the surface or in front of it. Inward is the usual wall-eyed viewing mode; outward is cross-eyed/front projection.">?</span></span>
           <select id="projection">
             <option value="inward">Inward / behind surface</option>
             <option value="outward">Outward / in front of surface</option>
           </select>
         </label>
-        <label>Depth strength<input id="depthStrength" type="range" min="0" max="0.95" step="0.01" value="0.45"></label>
-        <label>Depth of field<input id="depthBlur" type="range" min="0" max="8" step="0.5" value="1"></label>
-        <label>Gamma<input id="gamma" type="range" min="0.25" max="3" step="0.05" value="1"></label>
+        <label><span class="label-text">Depth strength<span class="tip" tabindex="0" aria-label="Amount of stereo offset added by the depth map. Higher values create stronger 3D relief but can become difficult or impossible to fuse.">?</span></span><input id="depthStrength" type="range" min="0" max="0.95" step="0.01" value="0.45"></label>
+        <label><span class="label-text">Depth of field<span class="tip" tabindex="0" aria-label="Blurs/smooths the depth map before encoding. More blur softens abrupt depth jumps and can make the stereogram easier to view.">?</span></span><input id="depthBlur" type="range" min="0" max="8" step="0.5" value="1"></label>
+        <label><span class="label-text">Gamma<span class="tip" tabindex="0" aria-label="Changes how grayscale values map to depth. Lower values emphasize lighter/near areas; higher values compress them and emphasize darker/mid areas.">?</span></span><input id="gamma" type="range" min="0.25" max="3" step="0.05" value="1"></label>
       </div>
 
       <h2>Pattern</h2>
       <div class="grid">
-        <label>Randomize seed<input id="seed" type="number" min="1" max="999999999" value="12345"></label>
-        <label>Jitter %<input id="jitter" type="range" min="0" max="100" step="1" value="8"></label>
-        <label>Contrast<input id="contrast" type="range" min="0.25" max="2.5" step="0.05" value="1"></label>
-        <label>Brightness<input id="brightness" type="range" min="-100" max="100" step="1" value="0"></label>
+        <label><span class="label-text">Randomize seed<span class="tip" tabindex="0" aria-label="Changes the deterministic random offsets used in the repeated pattern. Same seed gives the same result with the same inputs and settings.">?</span></span><input id="seed" type="number" min="1" max="999999999" value="12345"></label>
+        <label><span class="label-text">Jitter %<span class="tip" tabindex="0" aria-label="Adds random variation to the repeated pattern so the eye has more texture to lock onto. Too much can make the image noisy.">?</span></span><input id="jitter" type="range" min="0" max="100" step="1" value="8"></label>
+        <label><span class="label-text">Contrast<span class="tip" tabindex="0" aria-label="Adjusts contrast of the pattern before encoding. Higher contrast can make fusion easier but may reveal artifacts.">?</span></span><input id="contrast" type="range" min="0.25" max="2.5" step="0.05" value="1"></label>
+        <label><span class="label-text">Brightness<span class="tip" tabindex="0" aria-label="Adjusts brightness of the pattern before encoding. Useful for making the final stereogram less dark or less washed out.">?</span></span><input id="brightness" type="range" min="-100" max="100" step="1" value="0"></label>
       </div>
 
       <div class="buttons">
@@ -74,7 +74,7 @@
       <canvas id="outputCanvas"></canvas>
       <details>
         <summary>Viewing tip</summary>
-        <p>Look through the image as if focusing behind the screen. For outward mode, try slightly crossing your eyes. Small changes in tile width and depth strength can make the hidden form easier to see.</p>
+        <p>Look through the image as if focusing behind the screen. For outward mode, try slightly crossing your eyes. The two red dots at the bottom are spaced one tile width apart and can help you gauge how much to diverge or cross your eyes. Small changes in tile width and depth strength can make the hidden form easier to see.</p>
       </details>
     </section>
   </main>

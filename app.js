@@ -1,6 +1,8 @@
 const $ = (id) => document.getElementById(id);
 const canvas = $('outputCanvas');
 const ctx = canvas.getContext('2d', { willReadFrequently: true });
+const renderCanvas = document.createElement('canvas');
+const renderCtx = renderCanvas.getContext('2d', { willReadFrequently: true });
 let patternImg = null;
 let depthImg = null;
 
@@ -146,6 +148,38 @@ function sampleDepth(depthData, x, y, params) {
   return projection === 'outward' ? 1 - lum : lum;
 }
 
+function drawFusionGuide() {
+  if (!canvas.width || !canvas.height) return;
+
+  const guideSeparation = Math.max(16, Math.round(val('tileW') * Math.max(0.25, val('renderScale'))));
+  const radius = Math.max(4, Math.round(Math.min(canvas.width, canvas.height) * 0.008));
+  const bottomPadding = Math.max(radius + 6, Math.round(canvas.height * 0.02));
+  const centerX = canvas.width / 2;
+  const y = canvas.height - bottomPadding;
+  const leftX = Math.max(radius + 4, centerX - guideSeparation / 2);
+  const rightX = Math.min(canvas.width - radius - 4, centerX + guideSeparation / 2);
+
+  ctx.save();
+  ctx.fillStyle = '#ff2b2b';
+  ctx.strokeStyle = 'rgba(255,255,255,0.65)';
+  ctx.lineWidth = Math.max(1, radius * 0.35);
+  for (const x of [leftX, rightX]) {
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function renderPreviewWithGuide() {
+  canvas.width = renderCanvas.width;
+  canvas.height = renderCanvas.height;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(renderCanvas, 0, 0);
+  drawFusionGuide();
+}
+
 function generate() {
   if (!patternImg || !depthImg) {
     status('Load both a pattern image and a depth map, or use the sample.');
@@ -159,8 +193,8 @@ function generate() {
   const strength = val('depthStrength');
   const maxShift = Math.max(1, Math.round(tileW * strength));
 
-  canvas.width = w;
-  canvas.height = h;
+  renderCanvas.width = w;
+  renderCanvas.height = h;
 
   const depthW = Math.round(w * val('depthWPercent') / 100);
   const depthH = Math.round(h * val('depthHPercent') / 100);
@@ -169,7 +203,7 @@ function generate() {
 
   const depthData = drawScaledImageToData(depthImg, Math.max(1, depthW), Math.max(1, depthH), val('depthBlur') * scale);
   const strip = makePatternStrip(patternImg, tileW, h, val('seed'), val('jitter'), val('contrast'), val('brightness'));
-  const out = ctx.createImageData(w, h);
+  const out = renderCtx.createImageData(w, h);
 
   const params = { depthX, depthY, depthW, depthH, gamma: val('gamma'), projection: val('projection') };
 
@@ -197,7 +231,8 @@ function generate() {
     }
   }
 
-  ctx.putImageData(out, 0, 0);
+  renderCtx.putImageData(out, 0, 0);
+  renderPreviewWithGuide();
   $('downloadBtn').disabled = false;
   status(`Generated ${w}×${h}px stereogram.`);
 }
@@ -208,7 +243,7 @@ controls.forEach(id => $(id).addEventListener('change', () => { if (patternImg &
 $('downloadBtn').addEventListener('click', () => {
   const link = document.createElement('a');
   link.download = 'stereogram.png';
-  link.href = canvas.toDataURL('image/png');
+  link.href = renderCanvas.toDataURL('image/png');
   link.click();
 });
 
